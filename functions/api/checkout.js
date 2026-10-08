@@ -94,6 +94,9 @@ export async function onRequestPost({ request, env }) {
         }
         if (total !== product.size) return json({ error: `Pick exactly ${product.size} Fluxes` }, 400);
         line.note = "Colors: " + parts.join(", "); // shows on the order in Square, under this item
+        // Square's checkout page doesn't show notes, so put the colors in the item name too
+        // (only possible when the item isn't linked to a Square catalog item)
+        if (!varId) line.name = `${product.name} (${parts.join(", ")})`.slice(0, 500);
         notes.push(`20-Pack${qty > 1 ? ` (x${qty})` : ""}: ${parts.join(", ")}`);
       }
       line_items.push(line);
